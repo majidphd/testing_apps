@@ -8,4 +8,4 @@ nltk
 Counter
 stopwords
 LLM
-openai
+openai==0.28
