@@ -8,3 +8,4 @@ nltk
 Counter
 stopwords
 LLM
+openai
