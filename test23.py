@@ -11,3 +11,14 @@ def llm_response(prompt):
         temperature=0
     )
     return response.choices[0].message['content']
+
+prompt = '''
+    Classify the following review 
+    as having either a positive or
+    negative sentiment:
+
+    The banana pudding was really tasty!
+'''
+
+response = llm_response(prompt)
+print(response)
