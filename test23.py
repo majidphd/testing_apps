@@ -1,49 +1,29 @@
 import streamlit as st
-import openai
-import os 
+from transformers import pipeline
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Load the RAG model for text generation
+rag_generator = pipeline("text-generation", model="facebook/rag-token-nq")
 
-def llm_response(prompt):
-    response = openai.ChatCompletion.create(
-        model='gpt-3.5-turbo',
-        messages=[{'role':'user','content':prompt}],
-        temperature=0
-    )
-    return response.choices[0].message['content']
-    
-all_reviews = [
-    'The mochi is excellent!',
-    'Best soup dumplings I have ever eaten.',
-    'Not worth the 3 month wait for a reservation.',
-    'The colorful tablecloths made me smile!',
-    'The pasta was cold.'
-]
+def generate_response(prompt):
+    # Generate a response using the RAG model
+    response = rag_generator(prompt, max_length=50, num_return_sequences=1)
+    return response[0]['generated_text']
 
-all_reviews
+def main():
+    st.title("RAG (Retrieval-Augmented Generator) Streamlit App")
+    st.write("Enter a prompt and let RAG generate a response!")
 
+    # User input for the prompt
+    user_prompt = st.text_area("Enter Prompt:", "")
 
-all_sentiments = []
-for review in all_reviews:
-    prompt = f'''
-        Classify the following review 
-        as having either a positive or
-        negative sentiment. State your answer
-        as a single word, either "positive" or
-        "negative":
+    if st.button("Generate Response"):
+        if user_prompt:
+            # Generate response and display it
+            generated_response = generate_response(user_prompt)
+            st.write("Generated Response:")
+            st.write(generated_response)
+        else:
+            st.warning("Please enter a prompt.")
 
-        {review}
-        '''
-    response = llm_response(prompt)
-    all_sentiments.append(response)
-
-all_sentiments
-
-num_positive = 0
-num_negative = 0
-for sentiment in all_sentiments:
-    if sentiment == 'positive':
-        num_positive += 1
-    elif sentiment == 'negative':
-        num_negative += 1
-print(f"There are {num_positive} positive and {num_negative} negative reviews.")
+if __name__ == "__main__":
+    main()
