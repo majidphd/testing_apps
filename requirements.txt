@@ -5,7 +5,5 @@ openpyxl
 wordcloud
 numpy
 nltk
-collections
-string
 Counter
 stopwords
