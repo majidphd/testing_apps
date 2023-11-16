@@ -11,3 +11,4 @@ LLM
 openai==0.28
 transformers
 pipeline
+transformers
