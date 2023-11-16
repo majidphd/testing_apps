@@ -1,14 +1,2 @@
-pandas
-plotly
 streamlit
-openpyxl
-wordcloud
-numpy
-nltk
-Counter
-stopwords
-LLM
-openai==0.28
-transformers
-pipeline
 transformers
