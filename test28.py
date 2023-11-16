@@ -1,23 +1,29 @@
 import streamlit as st
-from transformers import AutoTokenizer, AutoModelForQuestionAnswering
+import openai
 
-# Load the tokenizer and model
-tokenizer = AutoTokenizer.from_pretrained("huggingface/conversational-ai-checkpoint")
-model = AutoModelForQuestionAnswering.from_pretrained("huggingface/conversational-ai-checkpoint")
+# Set your OpenAI API key
+openai.api_key = "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"
 
-# Define the Streamlit app
-st.title("LLM-powered Q&A")
+def generate_response(prompt):
+    # Call the OpenAI API to generate a response based on the prompt
+    response = openai.Completion.create(
+        engine="text-davinci-003",  # Choose the engine, e.g., text-davinci-003
+        prompt=prompt,
+        max_tokens=150  # Adjust the maximum number of tokens in the response
+    )
+    return response.choices[0].text.strip()
 
-# Get the user's question
-question = st.text_input("Ask a question:")
+def main():
+    st.title("Streamlit with Large Language Model")
 
-# Convert the question to tokens
-input_ids = tokenizer(question, return_tensors="pt")
+    # Get user input
+    user_input = st.text_input("Enter a prompt:")
 
-# Generate the answer
-outputs = model(**input_ids)
-pred_start_position, pred_end_position = outputs.start_logits.argmax(-1).item(), outputs.end_logits.argmax(-1).item()
-answer = tokenizer.decode(outputs.input_ids[0][pred_start_position:pred_end_position+1])
+    if st.button("Generate Response"):
+        if user_input:
+            # Generate response using the GPT-3.5 model
+            response = generate_response(user_input)
+            st.markdown(f"**Model Output:** {response}")
 
-# Display the answer
-st.write(answer)
+if __name__ == "__main__":
+    main()
